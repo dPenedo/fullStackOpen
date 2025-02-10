@@ -25,7 +25,6 @@ deactivate server
 
 browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
 activate server
-Note left on the server: Server processes the new note and saves it
 server-->>browser: HTTP 302 Redirect to /exampleapp/notes
 deactivate server
 
