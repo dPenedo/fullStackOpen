@@ -1,3 +1,6 @@
+import personsService from "../services/persons";
+import { useEffect } from "react";
+
 const AddPersonForm = ({
   persons,
   newName,
@@ -6,6 +9,12 @@ const AddPersonForm = ({
   setNewName,
   setNewNumber,
 }) => {
+  useEffect(() => {
+    personsService.getAll().then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
+
   const handleNameInputChange = (event) => {
     setNewName(event.target.value);
   };
@@ -19,20 +28,34 @@ const AddPersonForm = ({
 
     const isNameTaken = persons.some((person) => person.name === newName);
 
-    if (isNameTaken) {
-      alert(`${newName} is already added to phonebook`);
-      return;
-    }
-
     const personObject = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber,
     };
-
-    setPersons(persons.concat(personObject));
-    setNewName("");
-    setNewNumber("");
+    if (isNameTaken) {
+      if (
+        window.confirm(
+          `${newName} is already on the list, do you want to update the number?`,
+        )
+      ) {
+        const repeatedPerson = persons.find(
+          (person) => person.name === newName,
+        );
+        personsService
+          .updatePerson(repeatedPerson.id, personObject)
+          .then((response) => {
+            setNewName("");
+            setNewNumber("");
+            setPersons(persons.concat(response.data));
+          });
+      }
+    } else {
+      personsService.createPerson(personObject).then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+        setNewNumber("");
+      });
+    }
   };
 
   return (

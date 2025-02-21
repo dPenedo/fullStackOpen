@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddPersonForm from "./components/AddPersonForm";
 import Filter from "./components/Filter";
 import Numbers from "./components/Numbers";
+import axios from "axios";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { id: 1, name: "Arto Hellas", number: "020-6345789" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((response) => {
+      console.log("primer get a persons: ", response);
+      setPersons(response.data);
+    });
+  }, []);
 
   const personsToShow = persons.filter((person) =>
     person.name.toUpperCase().includes(newFilter.toUpperCase()),
@@ -27,7 +32,7 @@ const App = () => {
         setNewName={setNewName}
         setNewNumber={setNewNumber}
       />
-      <Numbers personsToShow={personsToShow} />
+      <Numbers setPersons={setPersons} personsToShow={personsToShow} />
     </div>
   );
 };
