@@ -8,6 +8,8 @@ const AddPersonForm = ({
   setPersons,
   setNewName,
   setNewNumber,
+  setNotificationMessage,
+  setNotificationStyle,
 }) => {
   useEffect(() => {
     personsService.getAll().then((response) => {
@@ -44,14 +46,38 @@ const AddPersonForm = ({
         personsService
           .updatePerson(repeatedPerson.id, personObject)
           .then((response) => {
+            // Actualiza el estado `persons` reemplazando la entrada antigua con la nueva
+            setPersons((prevPersons) =>
+              prevPersons.map((person) =>
+                person.id === repeatedPerson.id ? response.data : person,
+              ),
+            );
+            setNotificationStyle("green");
+            setNotificationMessage(`Updated ${response.data.name}'s number`);
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 5000);
             setNewName("");
             setNewNumber("");
-            setPersons(persons.concat(response.data));
+          })
+          .catch((error) => {
+            setNotificationStyle("red");
+            setNotificationMessage(
+              `Information of ${newName}'s number has already been removed from server.`,
+            );
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 5000);
           });
       }
     } else {
       personsService.createPerson(personObject).then((response) => {
         setPersons(persons.concat(response.data));
+        setNotificationStyle("green");
+        setNotificationMessage(`${response.data.name} added`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 5000);
         setNewName("");
         setNewNumber("");
       });
