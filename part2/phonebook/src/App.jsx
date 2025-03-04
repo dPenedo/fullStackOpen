@@ -13,7 +13,7 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationStyle, setNotificationStyle] = useState("green");
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+    axios.get("http://localhost:3001/api/persons").then((response) => {
       console.log("primer get a persons: ", response);
       setPersons(response.data);
     });
