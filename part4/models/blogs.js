@@ -7,4 +7,12 @@ const blogSchema = new mongoose.Schema({
   likes: Number,
 });
 
+blogSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+
+blogSchema.set("toJson", {
+  virtuals: true,
+});
+
 module.exports = mongoose.model("Blog", blogSchema);

@@ -64,17 +64,16 @@ test("Se puede añadir una nota válida", async () => {
 
   const response = await api.get("/api/blogs");
   const titles = response.body.map((e) => e.title);
-  console.log("titles => ", titles);
   assert.strictEqual(response.body.length, initialPosts.length + 1);
   assert(titles.includes("nuevo cosa"));
 });
 
 // TODO: continuar
-test("id como identificador", async () => {
-  const newBlog = {
-    author: "autorr",
-    url: "http://laweb.com",
-  };
+test("author existe", async () => {
+  const response = await api.get("/api/blogs");
+  response.body.forEach((blog) => {
+    expect(blog.author).toBeDefined();
+  });
 });
 
 after(async () => {
