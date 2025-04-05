@@ -8,6 +8,8 @@ const helper = require("./test_helper.js");
 
 const app = require("../app");
 const api = supertest(app);
+
+
 describe("cuando hay notas guardadas, desde un inicio", () => {
   beforeEach(async () => {
     await Blog.deleteMany({});

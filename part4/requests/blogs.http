@@ -1,0 +1,41 @@
+### GET all blogs
+GET http://localhost:3001/api/blogs
+Content-Type: application/json
+
+###
+
+### GET a blog by ID
+GET http://localhost:3001/api/blogs/67f1b727f1417dae8298a2ba
+Content-Type: application/json
+
+###
+
+### POST create a new blog
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Nuevo blog desde WebStorm",
+  "author": "Daniel",
+  "url": "https://dpenedo.com",
+  "likes": 7
+}
+
+###
+
+### DELETE a blog by ID
+DELETE http://localhost:3001/api/blogs/67f1b727f1417dae8298a2ba
+Content-Type: application/json
+
+###
+
+### PUT update a blog by ID
+PUT http://localhost:3001/api/blogs/67f1b727f1417dae8298a2ba
+Content-Type: application/json
+
+{
+  "title": "Blog actualizado",
+  "author": "Daniel P.",
+  "url": "https://dpenedo.com/actualizado",
+  "likes": 10
+}
