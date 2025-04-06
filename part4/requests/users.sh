@@ -9,9 +9,7 @@ echo -e "\n----------------------------------\n"
 echo "➡️  POST a user"
 http POST :3001/api/users \
   Content-Type:application/json \
-  username="usuario_desde_httpie" \
+  username="uelalal" \
   name="Nombre Test" \
   password="laguagua"
 echo -e "\n----------------------------------\n"
-
-for

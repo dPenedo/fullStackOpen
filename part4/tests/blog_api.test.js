@@ -10,7 +10,7 @@ const app = require("../app");
 const api = supertest(app);
 
 
-describe("cuando hay notas guardadas, desde un inicio", () => {
+describe("cuando hay posts guardadas, desde un inicio", () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
     let blogObject = new Blog(helper.initialPosts[0]);
@@ -19,7 +19,7 @@ describe("cuando hay notas guardadas, desde un inicio", () => {
     await blogObject.save();
   });
 
-  test("los posts se muestran como json", async () => {
+  test("los posts se muestran como JSON", async () => {
     await api
       .get("/api/blogs")
       .expect(200)

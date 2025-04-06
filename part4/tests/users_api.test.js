@@ -18,22 +18,32 @@ describe("cuando hay un usuario inicial en la db", () => {
     const user = new User({ username: "root", passwordHash });
     await user.save();
   });
+  test("Los usuarios se muestran como JSON", async () => {
+    const response = await api
+        .get("/api/users")
+        .expect(200)
+        .expect("Content-Type", /application\/json/)
+
+    assert(response.body.some((user)=> user.username === 'root'), true)
+  })
 
   test("la creación funciona con un nuevo username", async () => {
     const usersAtStart = await helper.usersInDB();
+    console.log("usersAtStart", usersAtStart)
 
     const newUser = {
-      username: "elPelanas",
+      username: "elpelanas",
       name: "senior pelanas",
       password: "laguagua123",
     };
-
     await api
       .post("/api/users")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+        .send(newUser)
+      .expect(201)
+       .expect("Content-Type", /application\/json/);
 
-    const usersAtEnd = await helper.blogsInDB();
+    const usersAtEnd = await helper.usersInDB();
+    console.log("usersAtEnd", usersAtEnd)
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1);
     const usernames = usersAtEnd.map((u) => u.username);
     assert(usernames.includes(newUser.username));
