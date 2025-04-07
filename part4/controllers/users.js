@@ -15,15 +15,15 @@ usersRouter.post("/", async (request, response) => {
       name,
       passwordHash,
     });
-
     const savedUser = await user.save();
     response.status(201).json(savedUser);
   }
-
 });
 
 usersRouter.get("/", async (request, response) => {
-  const users = await User.find({});
+  const users = await User
+      .find({})
+      .populate('blogs')
   response.json(users);
 });
 

@@ -24,12 +24,11 @@ describe("cuando hay un usuario inicial en la db", () => {
         .expect(200)
         .expect("Content-Type", /application\/json/)
 
-    assert(response.body.some((user)=> user.username === 'root'), true)
+    assert(response.body.some((user)=> user.username === 'root'))
   })
 
   test("la creación funciona con un nuevo username", async () => {
     const usersAtStart = await helper.usersInDB();
-    console.log("usersAtStart", usersAtStart)
 
     const newUser = {
       username: "elpelanas",
@@ -43,12 +42,46 @@ describe("cuando hay un usuario inicial en la db", () => {
        .expect("Content-Type", /application\/json/);
 
     const usersAtEnd = await helper.usersInDB();
-    console.log("usersAtEnd", usersAtEnd)
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1);
     const usernames = usersAtEnd.map((u) => u.username);
     assert(usernames.includes(newUser.username));
   });
-  //   test("la creación falla con el statuscode apropiado cuando ")
+  test("crear un usuario con username < 3 chars falla con el statuscode 400 y  da el mensaje de Username is too short", async () => {
+    const newUser = {
+      username: "la",
+      name: "usuario",
+      password: "lagugua"
+    }
+    const response = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+    assert(response.body.error.includes("Username is too short"))
+  })
+  test("crear un usuario con username repetido da status code 400 y da un error username must be unique", async () => {
+    const newUser = {
+      username: "root",
+      name: "userrr",
+      password: "lallala"
+    }
+    const response = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+    assert(response.body.error.includes("username must be unique"))
+  })
+  test("crear un usuario con password de  menos de 3 caracteres da status code de 400 y da el error password must be longer than 3 chars", async () => {
+    const newUser = {
+      username: "elusuario",
+      name: "usuario",
+      password: "la"
+    }
+    const response = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+    assert(response.body.error.includes("password must be longer than 3 chars"))
+  })
 });
 
 after(async () => {
