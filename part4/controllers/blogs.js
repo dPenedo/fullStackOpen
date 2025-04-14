@@ -1,7 +1,6 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blogs");
-const User = require("../models/users");
-const jwt = require("jsonwebtoken");
+const middleware = require("../utils/middleware");
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({});
@@ -17,13 +16,9 @@ blogsRouter.get("/:id", async (request, response) => {
   }
 });
 
-blogsRouter.post("/", async (request, response) => {
+blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
   const body = request.body;
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: "token invalid" });
-  }
-  const user = await User.findById(decodedToken.id);
+  const user = request.user;
   const blog = new Blog({
     title: body.title,
     author: body.author === undefined ? false : body.author,
@@ -38,10 +33,28 @@ blogsRouter.post("/", async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
-blogsRouter.delete("/:id", async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id);
-  response.status(202).end();
-});
+blogsRouter.delete(
+  "/:id",
+  middleware.userExtractor,
+  async (request, response) => {
+    const blog = await Blog.findById(request.params.id);
+    const user = request.user;
+    if (blog.user.toString() === user.id.toString()) {
+      console.log("blog.user.toString()", blog.user.toString());
+      console.log("user.id.toString()", user.id.toString());
+      await Blog.findByIdAndDelete(request.params.id);
+      response.status(202).end();
+    } else if (!user) {
+      response.status(401).json({ error: "Not logged" });
+    } else if (blog.user.toString() !== user.id.toString()) {
+      response
+        .status(401)
+        .json({ error: "Logged user must be the same that blog creator" });
+    } else {
+      response.status(401).json({ error: "Unknown error" });
+    }
+  },
+);
 
 blogsRouter.put("/:id", async (request, response) => {
   const body = request.body;
