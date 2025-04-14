@@ -66,15 +66,12 @@ describe("cuando hay posts guardadas, desde un inicio", () => {
   test("Se puede hacer DELETE de una nota mediante su id", async () => {
     const response = await api.get("/api/blogs");
     const blogsAtStart = response.body;
-    console.log("blogsAtStart => ", blogsAtStart);
     const blogToDelete = blogsAtStart[0];
-    console.log("blogToDelete => ", blogToDelete);
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .set("Authorization", `Bearer ${token}`);
     const secondCall = await api.get("/api/blogs");
     const blogsAtEnd = secondCall.body;
-    console.log("blogsAtEnd => ", blogsAtEnd);
     assert.equal(blogsAtStart.length, blogsAtEnd.length + 1);
   });
 
@@ -93,7 +90,6 @@ describe("cuando hay posts guardadas, desde un inicio", () => {
       .expect("Content-Type", /application\/json/);
 
     const response = await api.get("/api/blogs");
-    // console.log("response.body => ", response.body);
     const titles = response.body.map((e) => e.title);
     assert.strictEqual(response.body.length, helper.initialPosts.length + 1);
     assert(titles.includes("nuevo cosa"));
