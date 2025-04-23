@@ -5,7 +5,7 @@ export const handleBlogChange = ({ event, setNewBlog, newBlog }) => {
     setNewBlog({ ...newBlog, [name]: value })
 };
 
-export const createBlog = async ({ event, newBlog, blogs, setBlogs, setNewBlog, setErrorMessage }) => {
+export const createBlog = async ({ event, newBlog, blogs, setBlogs, setNewBlog, setErrorMessage, setNotification, blogFormRef }) => {
     event.preventDefault()
     console.log("creating...")
     try {
@@ -16,16 +16,65 @@ export const createBlog = async ({ event, newBlog, blogs, setBlogs, setNewBlog, 
             url
         })
         console.log("NewBlog => ", blog);
-        // TODO: notificacion
+        blogFormRef.current.toggleVisibility()
+        const notificationText = "A new blog added by: " + blog.author + ": " + blog.title
+        setNotification(notificationText)
+
+        setTimeout(() => {
+            setNotification(null);
+        }, 5000);
         setNewBlog({ title: "", author: "", url: "", })
         setBlogs(blogs.concat(blog))
     } catch (exception) {
         console.error(exception)
-        // TODO: notificacion
         setErrorMessage("Error creating the blog");
         setTimeout(() => {
             setErrorMessage(null);
         }, 5000);
     }
+}
 
+export const likeABlog = async ({ blog, setBlogs, setErrorMessage, setNotification }) => {
+    try {
+        console.log("Liked")
+        const likes = blog.likes
+        const newBlog = { ...blog, likes: likes + 1 }
+        const notificationText = blog.title + " liked"
+        const returnedBlog = await blogService.update(blog.id, newBlog)
+        setBlogs(prevBlogs => prevBlogs.map(b => b.id === blog.id ? returnedBlog : b))
+        setNotification(notificationText)
+
+        setTimeout(() => {
+            setNotification(null);
+        }, 5000);
+    } catch (exception) {
+        console.error(exception)
+        setErrorMessage("Error liking the blog");
+        setTimeout(() => {
+            setErrorMessage(null);
+        }, 5000);
+
+    }
+}
+
+export const deleteABlog = async ({ blog, setBlogs, setErrorMessage, setNotification }) => {
+    try {
+        console.log("Delete")
+        const deletedBlog = await blogService.deleteBlog(blog.id)
+        const notificationText = blog.title + " deleted"
+        setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
+        setNotification(notificationText)
+
+        setTimeout(() => {
+            setNotification(null);
+        }, 5000);
+
+    } catch (exception) {
+        console.error(exception)
+        setErrorMessage("Error deleting the blog");
+        setTimeout(() => {
+            setErrorMessage(null);
+        }, 5000);
+
+    }
 }

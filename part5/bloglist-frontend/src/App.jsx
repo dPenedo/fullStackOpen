@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import blogService from "./services/blogs";
 import blogForm from "./components/BlogForm";
-import blogList from "./components/BlogList";
+import BlogList from "./components/BlogList";
 import loginForm from "./components/LoginForm";
 import manageSession from "./components/ManageSession";
 import { handleLogin, handleLogout } from "./logic/authHandlers";
 import { createBlog, handleBlogChange } from "./logic/blogHandlers";
+import NotificationMessage from "./components/NotificationMessage";
+import Togglable from "./components/Togglable";
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
@@ -15,6 +17,8 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [notification, setNotification] = useState(null)
+
+    const blogFormRef = useRef()
 
     useEffect(() => {
         blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -33,42 +37,30 @@ const App = () => {
     }
 
     const createBlogWrapper = (event) => {
-        createBlog({ event, newBlog, blogs, setBlogs, setNewBlog, setErrorMessage })
+        createBlog({ event, newBlog, blogs, setBlogs, setNewBlog, setErrorMessage, setNotification, blogFormRef })
 
     }
-
-    const NotificationMessage = () => {
-        return (
-            <div>
-                {notification === null ? (
-                    <div>
-                    </div>
-                ) : (
-                    <div>
-                        {notification}
-                    </div>
-                )}
-            </div>
-        )
-    }
-
-
-
-
 
 
     return (
         <div>
             <h1>Blogs App</h1>
-            <NotificationMessage />
+            <NotificationMessage notification={notification} errorMessage={errorMessage} />
 
             {user === null ? (
                 loginForm(handleLoginWrapper, username, setUsername, password, setPassword)
             ) : (
                 <div>
                     {manageSession(user, handleLogoutWrapper)}
-                    {blogForm(createBlogWrapper, newBlog, handleBlogChangeWrapper)}
-                    {blogList(blogs)}
+                    <Togglable buttonLabel="New blog" ref={blogFormRef}>
+                        {blogForm(createBlogWrapper, newBlog, handleBlogChangeWrapper)}
+                    </Togglable>
+                    <BlogList
+                        blogs={blogs}
+                        user={user}
+                        setBlogs={setBlogs}
+                        setNotification={setNotification}
+                        setErrorMessage={setErrorMessage} />
                 </div>
             )}
         </div>
