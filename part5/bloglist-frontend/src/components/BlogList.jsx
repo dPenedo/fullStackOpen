@@ -5,7 +5,8 @@ const BlogList = ({ user, blogs, setBlogs, setNotification, setErrorMessage }) =
         <div>
             <h2>Blog list</h2>
             {blogs.sort((a, b) => b.likes - a.likes).map((blog) => (
-                <Blog key={blog.id} blog={blog}
+                <Blog
+                    key={blog.id} blog={blog}
                     user={user}
                     setBlogs={setBlogs}
                     setNotification={setNotification}

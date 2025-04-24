@@ -34,19 +34,17 @@ const Blog = ({ user, blog, setBlogs, setErrorMessage, setNotification }) => {
 
 
     return (
-        <div style={blogStyle}>
-            <div><b>Title: </b>{blog.title} <button onClick={handleVisibilityClick}>{visibility ? 'hide' : 'show'}</button>
+        <div style={blogStyle} className="blog">
+            <div>{blog.title} <button onClick={handleVisibilityClick}>{visibility ? 'hide' : 'show'}</button>
             </div>
             {visibility &&
-                <div>
-                    <div><b>Author: </b>
-                        {blog.author}
-                    </div>
+                <div data-testid="hidden-info">
+                    <div>{blog.author}</div>
                     <div><b>URL: </b>
-                        {blog.url}
+                        <div data-testid="blog-url">{blog.url}</div>
                     </div>
                     <div><b>Likes: </b>
-                        {blog.likes} <button onClick={handleLikeClick}>Like</button>
+                        <span data-testid="blog-likes">{blog.likes}</span> <button data-testid="button-like" onClick={handleLikeClick}>Like</button>
                     </div>
                     {user.user && blog.user === user.user ?
                         <button style={deleteButtonStyle} onClick={handleDeleteButton}>Delete</button> : <></>
@@ -58,4 +56,3 @@ const Blog = ({ user, blog, setBlogs, setErrorMessage, setNotification }) => {
 }
 
 export default Blog;
-
