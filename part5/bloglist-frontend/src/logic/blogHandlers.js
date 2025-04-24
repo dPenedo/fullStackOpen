@@ -53,14 +53,13 @@ export const likeABlog = async ({ blog, setBlogs, setErrorMessage, setNotificati
         setTimeout(() => {
             setErrorMessage(null);
         }, 5000);
-
     }
 }
 
 export const deleteABlog = async ({ blog, setBlogs, setErrorMessage, setNotification }) => {
     try {
         console.log("Delete")
-        const deletedBlog = await blogService.deleteBlog(blog.id)
+        await blogService.deleteBlog(blog.id)
         const notificationText = blog.title + " deleted"
         setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
         setNotification(notificationText)
