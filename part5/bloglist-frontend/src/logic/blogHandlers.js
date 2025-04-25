@@ -5,8 +5,7 @@ export const handleBlogChange = ({ event, setNewBlog, newBlog }) => {
     setNewBlog({ ...newBlog, [name]: value })
 };
 
-export const createBlog = async ({ event, newBlog, blogs, setBlogs, setNewBlog, setErrorMessage, setNotification, blogFormRef }) => {
-    event.preventDefault()
+export const createBlog = async ({ newBlog, blogs, setBlogs, setNewBlog, setErrorMessage, setNotification, blogFormRef }) => {
     console.log("creating...")
     try {
         const { title, author, url } = newBlog

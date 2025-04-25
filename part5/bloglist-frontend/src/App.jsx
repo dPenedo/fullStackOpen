@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import blogService from "./services/blogs";
-import blogForm from "./components/BlogForm";
+import BlogForm from "./components/BlogForm";
 import BlogList from "./components/BlogList";
 import loginForm from "./components/LoginForm";
 import manageSession from "./components/ManageSession";
@@ -36,8 +36,8 @@ const App = () => {
         handleBlogChange({ event, setNewBlog, newBlog })
     }
 
-    const createBlogWrapper = (event) => {
-        createBlog({ event, newBlog, blogs, setBlogs, setNewBlog, setErrorMessage, setNotification, blogFormRef })
+    const createBlogWrapper = () => {
+        createBlog({ newBlog, blogs, setBlogs, setNewBlog, setErrorMessage, setNotification, blogFormRef })
 
     }
 
@@ -53,7 +53,11 @@ const App = () => {
                 <div>
                     {manageSession(user, handleLogoutWrapper)}
                     <Togglable buttonLabel="New blog" ref={blogFormRef}>
-                        {blogForm(createBlogWrapper, newBlog, handleBlogChangeWrapper)}
+                        <BlogForm
+                            createBlog={createBlogWrapper}
+                            newBlog={newBlog}
+                            handleBlogChange={handleBlogChangeWrapper}
+                        />
                     </Togglable>
                     <BlogList
                         blogs={blogs}

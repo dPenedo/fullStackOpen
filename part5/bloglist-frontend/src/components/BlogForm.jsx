@@ -1,11 +1,17 @@
-const blogForm = (createBlog, newBlog, handleBlogChange) => {
+const BlogForm = ({ createBlog, newBlog, handleBlogChange }) => {
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        console.log("Creating...")
+        createBlog(newBlog)
+    }
     return (
         <div>
             <h3>Create a new blog</h3>
-            <form onSubmit={createBlog}>
+            <form onSubmit={handleSubmit}>
                 <div>
                     Title:
                     <input
+                        data-testid="test-input-title"
                         type="text"
                         value={newBlog.title}
                         name="title"
@@ -15,6 +21,7 @@ const blogForm = (createBlog, newBlog, handleBlogChange) => {
                 <div>
                     Author:
                     <input
+                        data-testid="test-input-author"
                         type="text"
                         value={newBlog.author}
                         name="author"
@@ -24,16 +31,17 @@ const blogForm = (createBlog, newBlog, handleBlogChange) => {
                 <div>
                     URL:
                     <input
+                        data-testid="test-input-url"
                         type="text"
                         value={newBlog.url}
                         name="url"
                         onChange={handleBlogChange}
                     />
                 </div>
-                <button type="submit">Create it</button>
+                <button data-testid="test-create-button" type="submit">Create it</button>
             </form>
         </div>
     );
 };
 
-export default blogForm
+export default BlogForm

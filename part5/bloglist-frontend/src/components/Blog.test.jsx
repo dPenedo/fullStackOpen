@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, expect } from 'vitest'
+import { likeABlog } from '../logic/blogHandlers'
 
 
 let blog
@@ -10,6 +11,10 @@ let mockSetNotification
 let mockSetErrorMessage
 let mockHandler
 let user
+vi.mock('../logic/blogHandlers', () => ({
+    likeABlog: vi.fn(),
+}))
+
 beforeEach(async () => {
     blog = {
         title: "unTitulo",
@@ -26,6 +31,7 @@ beforeEach(async () => {
     mockHandler = vi.fn()
     user = userEvent.setup()
 })
+
 test('Muestra titulo del blog', async () => {
     const { container } = render(
         <Blog
@@ -91,6 +97,6 @@ test('si se hace clic dos veces en el botón like, se likea 2 veces', async () =
     )
 
     expect(screen.getByText('14')).toBeDefined()
-    // TODO: También hay que comprobar que se le llama 2 veces
+    expect(likeABlog.mock.calls).toHaveLength(2)
 
 })
