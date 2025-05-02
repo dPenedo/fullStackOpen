@@ -1,3 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit";
+
 const anecdotesAtStart = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
@@ -8,7 +10,6 @@ const anecdotesAtStart = [
 ];
 
 const getId = () => (100000 * Math.random()).toFixed(0);
-
 const asObject = (anecdote) => {
   return {
     content: anecdote,
@@ -19,26 +20,26 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-const reducer = (state = initialState, action) => {
-  if (action.type === "VOTE") {
-    const votedAnecdote = state.find((e) => e.id === action.payload.id);
-    const newVotedAnecdote = {
-      ...votedAnecdote,
-      votes: votedAnecdote.votes + 1,
-    };
+// WARN: Refactorizado y no fucniona
+const anecdotesSlice = createSlice({
+  name: "anecdotes",
+  initialState: initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      const newAnecdote = action.payload;
+      state.push(newAnecdote);
+    },
+    voteAnecdote(state, action) {
+      const votedAnecdote = state.find((e) => e.id === action.payload.id);
+      const newVotedAnecdote = {
+        ...votedAnecdote,
+        votes: votedAnecdote.votes + 1,
+      };
+      return state.map((an) =>
+        an.id !== votedAnecdote.id ? an : newVotedAnecdote,
+      );
+    },
+  },
+});
 
-    console.log("state now: ", state);
-    console.log("action", action);
-    console.log("id => " + votedAnecdote.content);
-    return state.map((an) =>
-      an.id !== votedAnecdote.id ? an : newVotedAnecdote,
-    );
-  } else if (action.type === "NEW_ANECDOTE") {
-    console.log("Anecdota => " + action.payload.content);
-    return state.concat(action.payload);
-  }
-
-  return state;
-};
-
-export default reducer;
+export default anecdotesSlice.reducer;
