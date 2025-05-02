@@ -33,10 +33,12 @@ const reducer = (state = initialState, action) => {
     return state.map((an) =>
       an.id !== votedAnecdote.id ? an : newVotedAnecdote,
     );
+  } else if (action.type === "NEW_ANECDOTE") {
+    console.log("Anecdota => " + action.payload.content);
+    return state.concat(action.payload);
   }
 
   return state;
 };
 
 export default reducer;
-
