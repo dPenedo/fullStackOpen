@@ -1,7 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
+import { voteAnecdote } from "../reducers/anecdoteReducer";
+
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
+
 
   const anecdotes = useSelector(({ anecdotes, filter }) => {
     if (!filter) return anecdotes;
@@ -10,10 +13,8 @@ const AnecdoteList = () => {
     );
   });
   const vote = (id) => {
-    dispatch({
-      type: "VOTE",
-      payload: { id },
-    });
+    dispatch(voteAnecdote(id));
+
   };
   return (
     <div>

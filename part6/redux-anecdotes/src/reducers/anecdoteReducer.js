@@ -20,7 +20,6 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-// WARN: Refactorizado y no fucniona
 const anecdotesSlice = createSlice({
   name: "anecdotes",
   initialState: initialState,
@@ -30,16 +29,14 @@ const anecdotesSlice = createSlice({
       state.push(newAnecdote);
     },
     voteAnecdote(state, action) {
-      const votedAnecdote = state.find((e) => e.id === action.payload.id);
-      const newVotedAnecdote = {
-        ...votedAnecdote,
-        votes: votedAnecdote.votes + 1,
-      };
-      return state.map((an) =>
-        an.id !== votedAnecdote.id ? an : newVotedAnecdote,
-      );
+      const id = action.payload;
+      const anecdote = state.find((a) => a.id === id);
+      if (anecdote) {
+        anecdote.votes += 1;
+      }
     },
   },
 });
 
+export const { createAnecdote, voteAnecdote } = anecdotesSlice.actions;
 export default anecdotesSlice.reducer;
